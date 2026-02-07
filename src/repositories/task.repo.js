@@ -30,20 +30,36 @@ const getTask = async (id) => {
     return tasks.find((task) => task.id === id);
 }
 const createTask = async(task) => {
-    const newTask ={id: currentId++, ...task};
+    const exists = tasks.find(t => t.title === task.title);
+    if (exists) {
+         throw new Error("Task already exists");
+    }
+    const newTask = { id: currentId++, ...task };
     tasks.push(newTask);
     return newTask;    
 }
 const updateTask = async(id, task) => {
+
+    id = Number(id);
+    console.log("Updating task with ID:", id, "with data:", task.id);
     const index = tasks.findIndex((task) => task.id === id);
-    return tasks[index] = task;
-}
+    if (index == -1) {
+    throw new Error("Task not found");
+    }
+    tasks[index] = {...tasks[index], ...task};
+        return tasks[index];
+
+    
+};
+
 const deleteTask = async(id) => {
+    id = Number(id);
     const index = tasks.findIndex((task) => task.id === id);
     if(index === -1){
-        throw new Error("Task not found");
+       throw new Error("Task not found");
     }
-    tasks.splice(index,1);
+    tasks.splice(index, 1);
+    return true;
 }
 module.exports = {
     getAllTasks,
